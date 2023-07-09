@@ -2,6 +2,11 @@ import redis
 import json
 import os
 
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+NOCOLOR = "\033[0m"
+
 class RedisServer:
     def __init__(self):
         self.redisDatabase = None
@@ -13,11 +18,11 @@ class RedisServer:
         self.redisDatabase.shutdown()
 
     def restartServer(self):
-        print("\n--Servidor redis reiniciado--\n")
+        print(f"\n{YELLOW}--Servidor redis reiniciado--\n{NOCOLOR}")
         os.system('systemctl restart redis.service')
 
     def takeSnapshot(self):
-        print("\n--Snapshot guardado correctamente--\n")
+        print(f"{GREEN}\n--Snapshot guardado correctamente--\n{NOCOLOR}")
         self.redisDatabase.save()
 
     def deleteSnapshots(self):
@@ -28,29 +33,29 @@ database.startServer()
 
 id = 0
 
-print("\n\n## Caso donde no hay persistencia en la base")
+print(f"\n\n{YELLOW}## Caso donde no hay persistencia en la base{NOCOLOR}")
 
 ## caso donde no hay persistencia en la base
 # creamos un usuario que contiene una lista de productos
 productos =[{'name': 'arroz'}, {'name': 'carne'}]
 database.redisDatabase.hset(f'user_{id+1}', mapping={'id': id+1, 'name': 'Carlos', 'products': json.dumps(productos)})
-print(f"Se inserto el user_1 con los datos: {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"{GREEN}Se inserto el user_1 con los datos:{NOCOLOR} {database.redisDatabase.hgetall(f'user_{id+1}')}")
 
 # reiniciamos el server
 database.restartServer()
 
 # buscamos el usuario
 # en este primer caso vemos que se pierden los datos
-print(f"Datos del usuario user_{id+1},: {database.redisDatabase.hgetall(f'user_{id+1}')}") 
+print(f"{RED}Datos del leidos del usuario user_{id+1}:{NOCOLOR} {database.redisDatabase.hgetall(f'user_{id+1}')}") 
 
-print("\n\n## Caso donde tomamos un snapshot de la base")
+print(f"\n\n{YELLOW}## Caso donde tomamos un snapshot de la base{NOCOLOR}")
 
 id = id+1
 ## caso donde si tomamos un snapshot de la base y no se pierden los datos
 # creamos un usuario que contiene una lista de productos
 productos =[{'name': 'arroz'}, {'name': 'carne'}]
 database.redisDatabase.hset(f'user_{id+1}', mapping={'id': id+1, 'name': 'Gerardo', 'products': json.dumps(productos)})
-print(f"Se inserto el user_2 con los datos: {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"{GREEN}Se inserto el user_2 con los datos:{NOCOLOR} {database.redisDatabase.hgetall(f'user_{id+1}')}")
 
 # tomamos un snapshot de la base de datos
 database.takeSnapshot()
@@ -60,12 +65,12 @@ database.restartServer()
 
 # buscamos el usuario
 # en este primer caso vemos que se pierden los datos
-print(f"Datos del usuario user_{id+1}: {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"Datos leidos del usuario user_{id+1}: {database.redisDatabase.hgetall(f'user_{id+1}')}")
 
 ## caso donde se actualiza un dato y no se toma un snapshot
 # creamos un usuario que contiene una lista de productos
 
-print(f"\n\n## Caso donde actualizamos los datos del usuario: user_{id+1}")
+print(f"\n\n{YELLOW}## Caso donde actualizamos los datos del usuario: user_{id+1}{NOCOLOR}")
 
 # agregamos un producto al usuario
 productos =[{'name': 'arroz'}, {'name': 'carne'}, {'name': 'leche'}]
@@ -80,7 +85,7 @@ database.restartServer()
 
 # buscamos el usuario
 # en este primer caso vemos que se pierden los datos
-print(f"Datos del usuario user_{id+1}: {database.redisDatabase.hgetall(f'user_{id+1}')}")
-print(f"Los datos se perdieron porque el snapshot se realizo antes de la actualizacion de los datos")
+print(f"{GREEN}Datos leidos del usuario user_{id+1}:{NOCOLOR} {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"{YELLOW}Los datos se perdieron porque el snapshot se realizo antes de la actualizacion de los datos{NOCOLOR}")
 
 lista = database.redisDatabase.hget(f'user_2', 'products')
