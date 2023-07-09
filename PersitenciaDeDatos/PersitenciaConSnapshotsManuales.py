@@ -1,7 +1,6 @@
 import redis
 import json
 import os
-from redis.commands.json.path import Path
 
 class RedisServer:
     def __init__(self):
@@ -42,7 +41,7 @@ database.restartServer()
 
 # buscamos el usuario
 # en este primer caso vemos que se pierden los datos
-print(f"Datos del usuario buscado: {database.redisDatabase.hgetall(f'user_{id+1}')}") 
+print(f"Datos del usuario user_{id+1},: {database.redisDatabase.hgetall(f'user_{id+1}')}") 
 
 print("\n\n## Caso donde tomamos un snapshot de la base")
 
@@ -61,7 +60,7 @@ database.restartServer()
 
 # buscamos el usuario
 # en este primer caso vemos que se pierden los datos
-print(f"Datos del usuario buscado: {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"Datos del usuario user_{id+1}: {database.redisDatabase.hgetall(f'user_{id+1}')}")
 
 ## caso donde se actualiza un dato y no se toma un snapshot
 # creamos un usuario que contiene una lista de productos
@@ -81,6 +80,7 @@ database.restartServer()
 
 # buscamos el usuario
 # en este primer caso vemos que se pierden los datos
-print(f"Datos del usuario buscado: {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"Datos del usuario user_{id+1}: {database.redisDatabase.hgetall(f'user_{id+1}')}")
+print(f"Los datos se perdieron porque el snapshot se realizo antes de la actualizacion de los datos")
 
 lista = database.redisDatabase.hget(f'user_2', 'products')
