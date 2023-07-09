@@ -68,8 +68,6 @@ database.restartServer()
 print(f"Datos leidos del usuario user_{id+1}: {database.redisDatabase.hgetall(f'user_{id+1}')}")
 
 ## caso donde se actualiza un dato y no se toma un snapshot
-# creamos un usuario que contiene una lista de productos
-
 print(f"\n\n{YELLOW}## Caso donde actualizamos los datos del usuario: user_{id+1}{NOCOLOR}")
 
 # agregamos un producto al usuario
@@ -87,5 +85,3 @@ database.restartServer()
 # en este primer caso vemos que se pierden los datos
 print(f"{GREEN}Datos leidos del usuario user_{id+1}:{NOCOLOR} {database.redisDatabase.hgetall(f'user_{id+1}')}")
 print(f"{YELLOW}Los datos se perdieron porque el snapshot se realizo antes de la actualizacion de los datos{NOCOLOR}")
-
-lista = database.redisDatabase.hget(f'user_2', 'products')
