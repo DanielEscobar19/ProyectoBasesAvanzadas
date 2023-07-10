@@ -31,8 +31,7 @@ print(f'Leemos desde el cluster los datos del usuario user_1: {redisCluster.hget
 print(f"{GREEN}Insertamos el usuario desdel el nodo1 del puerto 7000 user_2:{NOCOLOR} " + "{'name': 'Maria', 'edad': 25}")
 os.system("redis-cli -p 7000 -c hset user_2 name Maria edad 25") 
 
-# leemos los datos desde el nodo4 en el puerto 7004
-# result = os.system("redis-cli -p 7003 -c hgetall user_2") 
+# leemos los datos desde el nodo4 en el puerto 7003
 # print(result)
 with os.popen("redis-cli -p 7003 -c hgetall user_2") as f:
     line = f.readlines()
